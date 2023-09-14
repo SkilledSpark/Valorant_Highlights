@@ -44,6 +44,25 @@ while cap.isOpened():
     frame_num += 60  # Increment frame counter
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
 
+# Create new lists to store filtered frames and timestamps
+filtered_headshot_frames = []
+filtered_headshot_timestamp = []
+
+# Add the first frame and timestamp to the filtered lists
+filtered_headshot_frames.append(headshot_frames[0])
+filtered_headshot_timestamp.append(headshot_timestamp[0])
+
+# Iterate through the remaining frames and timestamps
+for i in range(1, len(headshot_timestamp)):
+    if headshot_timestamp[i] - headshot_timestamp[i - 1] >= 3.5:
+        # If the timestamps are more than 2.5 seconds apart, keep the frame and timestamp
+        filtered_headshot_frames.append(headshot_frames[i])
+        filtered_headshot_timestamp.append(headshot_timestamp[i])
+
+# Update the original lists with the filtered data
+headshot_frames = filtered_headshot_frames
+headshot_timestamp = filtered_headshot_timestamp
+
 # Release video capture object
 cap.release()
 
@@ -73,3 +92,4 @@ cv2.destroyAllWindows()
 
 print(len(headshot_frames))
 print(headshot_timestamp)
+
